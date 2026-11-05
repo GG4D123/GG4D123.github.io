@@ -423,7 +423,7 @@
   const SEG_ORDER = SEG_FIRST.concat(DAVIS.slice(SEG_START).concat(DAVIS.slice(0, SEG_START)).filter(id => !SEG_SKIP.includes(id) && !SEG_FIRST.includes(id)));
   // NVS comparison gallery: hand-picked scenes first, then the rest in the usual order
   const NVS_FIRST = ['libby','stunt','tennis','car-shadow','motorbike'];
-  const NVS_SKIP = ['rollerblade'];
+  const NVS_SKIP = ['rollerblade','breakdance-flare'];
   const NVS_ORDER = NVS_FIRST.concat(DAVIS.filter(id => !NVS_FIRST.includes(id) && !NVS_SKIP.includes(id)));
   // multi-view: two synchronized input cameras, all five clips have the same length
   const MV_COLS = [
