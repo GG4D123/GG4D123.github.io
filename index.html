@@ -248,10 +248,26 @@
     <div class="stat"><div class="stat-num" data-t="512">512</div><div class="stat-label">resolution</div></div>
   </div>
 
-  <!-- ===== Segmentation ===== -->
+  <!-- ===== NVS comparison ===== -->
   <section class="section wide">
     <div class="sec-head">
       <div class="label">Results / 01</div>
+      <h2 class="h2">Dynamic Novel-View Synthesis</h2>
+    </div>
+      <div class="tabs" role="tablist" id="nvs-tabs"></div>
+      <div class="results-row c5" id="nvs-row"></div>
+      <div class="scene-bar">
+        <div class="scene-nav">
+          <button class="nav-btn" id="nvs-prev" aria-label="Previous scene"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
+          <div class="dots" id="nvs-dots"></div>
+          <button class="nav-btn" id="nvs-next" aria-label="Next scene"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg></button>
+        </div>
+      </div>
+  </section>
+  <!-- ===== Segmentation ===== -->
+  <section class="section wide">
+    <div class="sec-head">
+      <div class="label">Results / 02</div>
       <h2 class="h2">Dynamic Region Segmentation</h2>
     </div>
       <div class="tabs" role="tablist" id="seg-tabs"></div>
@@ -265,22 +281,6 @@
       </div>
   </section>
 
-  <!-- ===== NVS comparison ===== -->
-  <section class="section wide">
-    <div class="sec-head">
-      <div class="label">Results / 02</div>
-      <h2 class="h2">Dynamic Novel-View Synthesis</h2>
-    </div>
-      <div class="tabs" role="tablist" id="nvs-tabs"></div>
-      <div class="results-row c5" id="nvs-row"></div>
-      <div class="scene-bar">
-        <div class="scene-nav">
-          <button class="nav-btn" id="nvs-prev" aria-label="Previous scene"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
-          <div class="dots" id="nvs-dots"></div>
-          <button class="nav-btn" id="nvs-next" aria-label="Next scene"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg></button>
-        </div>
-      </div>
-  </section>
 
 
 </div>
