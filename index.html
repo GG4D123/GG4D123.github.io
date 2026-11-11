@@ -321,15 +321,12 @@
     io.observe(el);
   }
 
-  // ---- hero: four input / rendering pairs at a time, paged by the side arrows ----
+  // ---- additional results (YouTube-VOS only): one row of two input / rendering pairs, paged by the arrows ----
   (function(){
     const YTVOS = ['a653d5c23b','f14409b6a3','997117a654','65ab7e1d98','2efb07554a','3eb39d11ab','e4b2095f58'];
-    const DAVIS_HERO = ['blackswan','bmx-trees','breakdance-flare','camel','car-shadow','cows','dance-jump','dog','elephant','flamingo','gold-fish','libby','lucia','motorbike','rollerblade','stunt','tennis'];
-    const HERO = YTVOS.map(id => ({ inp: 'assets/ytvos/' + id + '/input.mp4', out: 'assets/ytvos/' + id + '/out.mp4' }))
-      .concat(DAVIS_HERO.map(id => ({ inp: 'assets/davis/' + id + '/input.mp4', out: 'assets/davis/' + id + '/bt_ours.mp4' })));
-    // four pairs per set on wide screens, two on phones
-    const mq = window.matchMedia('(max-width:768px)');
-    const perPage = () => mq.matches ? 2 : 4;
+    const HERO = YTVOS.map(id => ({ inp: 'assets/ytvos/' + id + '/input.mp4', out: 'assets/ytvos/' + id + '/out.mp4' }));
+    // two pairs per set: one row on wide screens, stacked on phones
+    const perPage = () => 2;
     const box = document.getElementById('hero'), dots = document.getElementById('hero-dots');
     const nPages = () => Math.ceil(HERO.length / perPage());
     // the last page wraps around to the first scenes so the grid is always full
@@ -401,10 +398,6 @@
       box.classList.add('is-switching');
       setTimeout(() => { apply(k); box.classList.remove('is-switching'); }, 300);
     }
-    mq.addEventListener('change', e => {   // keep the first visible pair when the layout switches
-      const first = page * (e.matches ? 4 : 2);
-      buildDots(); const k = Math.floor(first / perPage()); page = -1; show(k);
-    });
     document.getElementById('hero-prev').onclick = () => show((page - 1 + nPages()) % nPages());
     document.getElementById('hero-next').onclick = () => show((page + 1) % nPages());
     whenNear(box, () => show(0));
