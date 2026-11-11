@@ -76,7 +76,7 @@
   .ours-vid{box-shadow:0 0 0 5px #ed748a;}
   .input-vid{box-shadow:0 0 0 5px #72bde5;}
   .cap{font-size:clamp(18px,1.65vw,28px);line-height:1.25;color:var(--body-muted);margin-top:12px;text-align:center;text-wrap:balance;}
-  .hero{margin-top:64px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"prev pairs next" ". dots .";column-gap:20px;align-items:center;}
+  .hero{margin-top:128px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"prev pairs next" ". dots .";column-gap:20px;align-items:center;}
   .hero .pairs{grid-area:pairs;min-width:0;}
   .pairs>*,.pair>*,.results-row>*,.cmp-row>*{min-width:0;} .hero-prev{grid-area:prev;} .hero-next{grid-area:next;} .hero-nav{grid-area:dots;}
   /* centre the side buttons on the two video rows, not on the block including the caption line below them */
@@ -186,7 +186,7 @@
     .subtitle{font-size:19px;margin-top:12px;}
     .tldr{margin-top:44px;} .tldr p{font-size:19px;}
     .stats{gap:40px;margin-top:36px;} .stat-num{font-size:40px;} .stat-label{font-size:14px;margin-top:4px;}
-    .hero{margin-top:44px;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"pairs pairs pairs" "prev dots next";column-gap:12px;row-gap:16px;}
+    .hero{margin-top:80px;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"pairs pairs pairs" "prev dots next";column-gap:12px;row-gap:16px;}
     .hero .nav-btn{width:40px;height:40px;margin-top:0;}
     .hero-nav{margin-top:0;gap:6px;}
     .dots{gap:6px;} .dot{width:7px;height:7px;flex-basis:7px;}
@@ -240,14 +240,6 @@
     <div class="stat"><div class="stat-num" data-t="512">512</div><div class="stat-label">resolution</div></div>
   </div>
 
-  <!-- ===== Teaser: four input / rendering pairs at a time ===== -->
-  <div class="hero wide">
-    <button class="nav-btn hero-prev" id="hero-prev" aria-label="Previous set"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
-    <div class="pairs" id="hero"></div>
-    <button class="nav-btn hero-next" id="hero-next" aria-label="Next set"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg></button>
-    <div class="hero-nav" id="hero-dots"></div>
-  </div>
-
   <!-- ===== NVS comparison ===== -->
   <section class="section wide">
     <div class="sec-head">
@@ -281,6 +273,13 @@
       </div>
   </section>
 
+  <!-- ===== Teaser: four input / rendering pairs at a time ===== -->
+  <div class="hero wide">
+    <button class="nav-btn hero-prev" id="hero-prev" aria-label="Previous set"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
+    <div class="pairs" id="hero"></div>
+    <button class="nav-btn hero-next" id="hero-next" aria-label="Next set"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg></button>
+    <div class="hero-nav" id="hero-dots"></div>
+  </div>
 
 
 </div>
