@@ -328,8 +328,9 @@
     // two pairs per set: one row on wide screens, stacked on phones
     const perPage = () => 2;
     const box = document.getElementById('hero'), dots = document.getElementById('hero-dots');
-    const nPages = () => Math.ceil(HERO.length / perPage());
-    // the last page wraps around to the first scenes so the grid is always full
+    // pages keep rolling through the list (7 scenes, 2 per page: 6+0, then 1+2, ...), so no page repeats the one before
+    const gcd = (a, b) => b ? gcd(b, a % b) : a;
+    const nPages = () => HERO.length / gcd(HERO.length, perPage());
     const members = k => Array.from({ length: perPage() }, (_, i) => (k * perPage() + i) % HERO.length);
     function video(src){
       const v = document.createElement('video');
