@@ -286,9 +286,9 @@
 </div>
 
 <script>
-// clips are encoded at 8 fps; play every video at 12 fps (1.5x). load() resets the rate, so set it again on every load and play
+// clips are encoded at 8 fps; play every video at 10 fps (1.25x). load() resets the rate, so set it again on every load and play
 (function(){
-  const RATE = 12 / 8;
+  const RATE = 10 / 8;
   ['loadstart', 'play'].forEach(t => document.addEventListener(t, e => {
     const v = e.target;
     if (v.tagName === 'VIDEO') { v.defaultPlaybackRate = RATE; v.playbackRate = RATE; }
