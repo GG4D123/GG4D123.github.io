@@ -113,6 +113,8 @@
   .results-row{display:grid;gap:16px;animation:sceneFade .45s ease-out;}
   .results-row.c4{grid-template-columns:repeat(4,1fr);}
   .results-row.c5{grid-template-columns:repeat(5,1fr);}
+  .results-row.c7{grid-template-columns:repeat(7,1fr);}
+  .results-row.c7 .cap{font-size:clamp(15px,1.4vw,26px);}
   .results-row.c4.chev{grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;column-gap:10px;}
   .pair-arrow.flat{padding-bottom:0;}
   .step-chev svg{display:block;width:16px;height:32px;fill:none;stroke:#ed748a;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
@@ -205,6 +207,9 @@
     .results-row .pair-arrow{display:none;}
     .results-row .row-upper{display:none;}
     .results-row.c5>div:first-child{grid-column:1 / -1;width:calc(50% - 5px);margin:0 auto;}
+    .results-row.c7{grid-template-columns:repeat(2,1fr);column-gap:10px;}
+    .results-row.c7>div:first-child{grid-column:1 / -1;width:calc(50% - 5px);margin:0 auto;}
+    .results-row.c7 .cap{font-size:15px;}
     .results-row.c5.mv>div:first-child{grid-column:auto;width:auto;margin:0;}
     .results-row.c5.mv>div:last-child{grid-column:1 / -1;width:calc(50% - 5px);margin:0 auto;}
     .cap{font-size:15px;margin-top:6px;}
@@ -237,7 +242,7 @@
   </div>
 
   <!-- ===== NVS comparison ===== -->
-  <section class="section wide">
+  <section class="section wide" id="nvs">
     <div class="sec-head">
       <div class="label">Results / 01</div>
       <h2 class="h2">Dynamic Novel-View Synthesis</h2>
@@ -427,10 +432,23 @@
   // Neural3D scenes with the dual-video captures interleaved (cook_spinach left out)
   const MV = ['coffee_martini','20250918_165029','cut_roasted_beef','20250918_164538',
               'flame_salmon','20250914_171654','flame_steak','sear_steak'];
-  const NVS_GROUPS = [
-    { name: 'Monocular',  dir: 'assets/davis/',     scenes: NVS_ORDER.map(id => ({ id })) },
-    { name: 'Multi-view', dir: 'assets/multiview/', scenes: MV.map(id => ({ id })), cols: MV_COLS, layout: 'mv' },
+  // DyCheck: the input camera, each method at a held-out camera, and the ground truth of that camera (all clips have the same length)
+  const DYC_COLS = [
+    { file: 'input.mp4',  cap: 'Input video',  sync: true, inp: true },
+    { file: 'mosca.mp4',  cap: 'MoSca',        sync: true },
+    { file: '4dgt.mp4',   cap: '4DGT',         sync: true },
+    { file: 'movies.mp4', cap: 'MoVieS',       sync: true },
+    { file: 'fsm.mp4',    cap: 'FSM',          sync: true },
+    { file: 'ours.mp4',   cap: 'GG4D (Ours)',  sync: true, ours: true },
+    { file: 'gt.mp4',     cap: 'Ground truth', sync: true },
   ];
+  const DYC = ['paper-windmill','teddy','spin'];
+  const NVS_GROUPS = [
+    { name: 'Monocular · DAVIS',   dir: 'assets/davis/',     scenes: NVS_ORDER.map(id => ({ id })) },
+    { name: 'Monocular · DyCheck', dir: 'assets/dycheck/',   scenes: DYC.map(id => ({ id })), cols: DYC_COLS },
+    { name: 'Multi-view · Neural3D / REON', dir: 'assets/multiview/', scenes: MV.map(id => ({ id })), cols: MV_COLS, layout: 'mv' },
+  ];
+  const NVS_DYCHECK = 1;   // index of the DyCheck tab; a link ending in #dycheck opens on it
   const SEG_GROUPS = [ { name: 'DAVIS', dir: 'assets/davis/', scenes: SEG_ORDER.map(id => ({ id })) } ];
   // sync:true columns share one clock (restart together); sync:false columns loop on their own
   const SEG_COLS = [
@@ -448,18 +466,24 @@
   ];
 
   // ROWS scenes are shown at once, one per row; captions sit under the last row only.
-  function gallery(prefix, GROUPS, COLS, ROWS, CHEV){
+  function gallery(prefix, GROUPS, COLS, ROWS, CHEV, START){
     ROWS = ROWS || 1;
-    let g = 0, i = 0, token = 0;   // i = page index
+    let g = START || 0, i = 0, token = 0;   // g = group (tab), i = page index
     const tabs = document.getElementById(prefix + '-tabs');
     const dots = document.getElementById(prefix + '-dots');
     const row  = document.getElementById(prefix + '-row');
     const rows = [];
     if (CHEV) row.classList.add('chev');
-    const colsOf = () => GROUPS[g].cols || COLS;   // a group may bring its own columns (same count)
-    for (let r = 0; r < ROWS; r++) {
+    const colsOf = () => GROUPS[g].cols || COLS;   // a group may bring its own columns
+    let nCols = 0;
+    // (re)build the row for n columns; a group with a different column count rebuilds it when its tab is opened
+    function build(n){
+     rows.forEach(R => R.vids.forEach(v => { v.pause(); v.removeAttribute('src'); v.load(); }));
+     rows.length = 0; row.innerHTML = ''; nCols = n;
+     row.classList.remove('c4', 'c5', 'c7'); row.classList.add('c' + n);
+     for (let r = 0; r < ROWS; r++) {
       const caps = [];
-      const vids = COLS.map((c, ci) => {
+      const vids = Array.from({ length: n }, (_, ci) => {
         if (CHEV && ci > 0) {   // chevron between neighbouring steps
           const ch = document.createElement('div');
           ch.className = 'pair-arrow step-chev' + (r === ROWS - 1 ? ' capped' : ' flat row-upper'); ch.setAttribute('aria-hidden', 'true');
@@ -485,7 +509,9 @@
       };
       vids.forEach(v => v.addEventListener('ended', () => { if (v === R.synced[0]) R.restart(); }));
       rows.push(R);
+     }
     }
+    build(colsOf().length);
     // phones show only the captioned (last) row, i.e. one scene per page
     const mq = window.matchMedia('(max-width:768px)');
     const rowsNow = () => mq.matches ? 1 : ROWS;
@@ -514,6 +540,7 @@
     function render(){
       const scenes = GROUPS[g].scenes;
       const my = ++token;
+      if (colsOf().length !== nCols) build(colsOf().length);
       buildTabs(); buildDots();
       row.style.animation = 'none'; void row.offsetWidth; row.style.animation = '';
       row.classList.toggle('mv', GROUPS[g].layout === 'mv');   // phone layout: both inputs share the top line
@@ -542,9 +569,21 @@
     document.getElementById(prefix + '-prev').onclick = () => { const n = nPages(); i = (i - 1 + n) % n; render(); };
     document.getElementById(prefix + '-next').onclick = () => { const n = nPages(); i = (i + 1) % n; render(); };
     whenNear(row, render);
+    return { open(k){ if (k !== g) { g = k; i = 0; render(); } } };
   }
   gallery('seg', SEG_GROUPS, SEG_COLS, 2, true);
-  gallery('nvs', NVS_GROUPS, NVS_COLS);
+  // a link ending in #dycheck opens on the DyCheck tab, with the NVS section in the middle of the screen
+  // (at the top when the section is taller than the screen)
+  const wantDyc = () => location.hash === '#dycheck';
+  const nvs = gallery('nvs', NVS_GROUPS, NVS_COLS, 1, false, wantDyc() ? NVS_DYCHECK : 0);
+  (function(){
+    const center = () => {
+      const el = document.getElementById('nvs');
+      el.scrollIntoView({ block: el.offsetHeight > window.innerHeight ? 'start' : 'center' });
+    };
+    if (wantDyc()) { center(); window.addEventListener('load', center); }
+    window.addEventListener('hashchange', () => { if (wantDyc()) { nvs.open(NVS_DYCHECK); center(); } });
+  })();
 })();
 </script>
 </body>
