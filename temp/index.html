@@ -259,7 +259,7 @@
       </div>
   </section>
   <!-- ===== NVS comparison on DyCheck: held-out cameras with ground truth ===== -->
-  <section class="section wide">
+  <section class="section wide" id="dycheck">
     <div class="sec-head">
       <div class="label">Results / 02</div>
       <h2 class="h2">Comparison on DyCheck</h2>
@@ -579,6 +579,17 @@
   ];
   const DYC_GROUPS = [ { name: 'DyCheck', dir: '../assets/dycheck/', scenes: ['paper-windmill','teddy','spin','apple'].map(id => ({ id })) } ];
   gallery('dyc', DYC_GROUPS, DYC_COLS);
+  // a link ending in #dycheck opens with that section in the middle of the screen (at the top when it is taller than the screen)
+  (function(){
+    const go = () => {
+      if (location.hash !== '#dycheck') return;
+      const el = document.getElementById('dycheck');
+      el.scrollIntoView({ block: el.offsetHeight > window.innerHeight ? 'start' : 'center' });
+    };
+    go();
+    window.addEventListener('load', go);
+    window.addEventListener('hashchange', go);
+  })();
 })();
 </script>
 </body>
